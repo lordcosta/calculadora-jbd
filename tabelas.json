@@ -1,11 +1,47 @@
 
 {
   "Residencial": {
-    "valor_fixo": 2100,
-    "valor_m2": 6.5
+    "À vista": {
+      "valor_fixo": 2100,
+      "valor_m2": 0.67,
+      "parcelas": 1
+    },
+    "2 parcelas": {
+      "valor_fixo": 2200,
+      "valor_m2": 0.75,
+      "parcelas": 2
+    },
+    "3 parcelas": {
+      "valor_fixo": 2300,
+      "valor_m2": 0.82,
+      "parcelas": 3
+    },
+    "4 parcelas": {
+      "valor_fixo": 2400,
+      "valor_m2": 0.90,
+      "parcelas": 4
+    }
   },
   "Não Residencial": {
-    "valor_fixo": 3200,
-    "valor_m2": 8.7
+    "À vista": {
+      "valor_fixo": 2500,
+      "valor_m2": 1.10,
+      "parcelas": 1
+    },
+    "2 parcelas": {
+      "valor_fixo": 2600,
+      "valor_m2": 1.20,
+      "parcelas": 2
+    },
+    "3 parcelas": {
+      "valor_fixo": 2700,
+      "valor_m2": 1.30,
+      "parcelas": 3
+    },
+    "4 parcelas": {
+      "valor_fixo": 2800,
+      "valor_m2": 1.40,
+      "parcelas": 4
+    }
   }
 }

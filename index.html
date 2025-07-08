@@ -2,40 +2,43 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora JBD</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora JBD</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="Logo JBD" class="logo" />
-    <h1>Simule aqui o Valor para Regularizar seu Lote</h1>
+    <div class="container">
+        <img src="logo.png" alt="Logo JBD" class="logo" />
+        <h1>Simule aqui o Valor para Regularizar seu Lote</h1>
 
-    <label for="tipo">Tipo de Imóvel:</label>
-    <select id="tipo">
-      <option value="Residencial">Residencial</option>
-      <option value="Não Residencial">Não Residencial</option>
-    </select>
+        <label for="tipo">Tipo de Imóvel:</label>
+        <select id="tipo">
+            <option>Residencial</option>
+            <option>Não Residencial</option>
+        </select>
 
-    <label for="metragem">Metragem Total (m²):</label>
-    <input type="number" id="metragem" min="0" />
+        <label for="metragem">Metragem Total (m²):</label>
+        <input type="number" id="metragem" />
 
-    <label for="formaPagamento">Forma de Pagamento:</label>
-    <select id="formaPagamento">
-      <option value="À vista">À vista</option>
-      <option value="Parcelado em até 6x">Parcelado em até 6x</option>
-      <option value="Parcelado em até 12x">Parcelado em até 12x</option>
-    </select>
+        <label for="pagamento">Forma de Pagamento:</label>
+        <select id="pagamento">
+            <option>À vista</option>
+            <option>2 parcelas</option>
+            <option>3 parcelas</option>
+            <option>4 parcelas</option>
+        </select>
 
-    <div class="buttons">
-      <button onclick="calcular()">CALCULAR</button>
-      <button onclick="limparCampos()">LIMPAR</button>
+        <div class="botoes">
+            <button onclick="calcular()">CALCULAR</button>
+            <button onclick="limpar()">LIMPAR</button>
+        </div>
+
+        <div id="resultado" class="resultado"></div>
+
+        <footer>Versão: v1.0.5</footer>
     </div>
 
-    <div id="resultado" class="resultado"></div>
-    <div class="versao">Versão: v1.0.4</div>
-  </div>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

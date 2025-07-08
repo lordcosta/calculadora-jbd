@@ -1,55 +1,48 @@
 
-function calcular() {
-  const tipo = document.getElementById('tipo').value;
-  const metragem = parseFloat(document.getElementById('metragem').value);
-  const formaPagamento = document.getElementById('formaPagamento').value;
-  const resultadoDiv = document.getElementById('resultado');
-
-  fetch('tabelas.json')
-    .then(response => response.json())
-    .then(tabelas => {
-      const tabela = tabelas[tipo];
-      if (!tabela) {
-        resultadoDiv.innerHTML = "Tipo de imóvel não encontrado.";
-        return;
-      }
-
-      let valorFinal = 0;
-      let qtdParcelas = 1;
-      let mensagem = "";
-
-      if (metragem <= 400) {
-        valorFinal = tabela.valor_fixo;
-        mensagem = `<i>Valor fixo (até 400 m²): R$ ${valorFinal.toFixed(2)}</i>`;
-      } else {
-        const valor_m2 = tabela.valor_m2;
-        valorFinal = metragem * valor_m2;
-        mensagem = `<i>Valor por m² (acima de 400 m²): R$ ${valor_m2.toFixed(2)}</i>`;
-      }
-
-      if (formaPagamento === "Parcelado em até 6x") {
-        qtdParcelas = 6;
-      } else if (formaPagamento === "Parcelado em até 12x") {
-        qtdParcelas = 12;
-      }
-
-      const valorParcela = valorFinal / qtdParcelas;
-
-      resultadoDiv.innerHTML = `
-        Quantidade de Parcelas: ${qtdParcelas}<br>
-        Valor da Parcela: R$ ${valorParcela.toFixed(2)}<br>
-        Valor Final Calculado: R$ ${valorFinal.toFixed(2)}<br><br>
-        ${mensagem}
-      `;
-    })
-    .catch(() => {
-      resultadoDiv.innerHTML = "Não foi possível calcular com os dados informados.";
-    });
+async function carregarTabela() {
+    const resposta = await fetch('tabelas.json');
+    return await resposta.json();
 }
 
-function limparCampos() {
-  document.getElementById('tipo').selectedIndex = 0;
-  document.getElementById('metragem').value = '';
-  document.getElementById('formaPagamento').selectedIndex = 0;
-  document.getElementById('resultado').innerHTML = '';
+function limpar() {
+    document.getElementById("tipo").selectedIndex = 0;
+    document.getElementById("metragem").value = "";
+    document.getElementById("pagamento").selectedIndex = 0;
+    document.getElementById("resultado").innerHTML = "";
+}
+
+async function calcular() {
+    const tipo = document.getElementById("tipo").value;
+    const metragem = parseFloat(document.getElementById("metragem").value);
+    const pagamento = document.getElementById("pagamento").value;
+
+    const resultadoDiv = document.getElementById("resultado");
+    const tabelas = await carregarTabela();
+
+    if (!tabelas[tipo] || !metragem || !pagamento) {
+        resultadoDiv.innerHTML = "<p>Não foi possível calcular com os dados informados.</p>";
+        return;
+    }
+
+    const tabela = tabelas[tipo][pagamento];
+    let valorFinal = 0;
+
+    if (metragem <= 400) {
+        valorFinal = tabela.valor_fixo;
+        resultadoDiv.innerHTML = `
+            <p>Quantidade de Parcelas: ${tabela.parcelas}</p>
+            <p>Valor da Parcela: R$ ${valorFinal.toFixed(2)}</p>
+            <p>Valor Final Calculado: R$ ${valorFinal.toFixed(2)}</p>
+            <p><em>Valor fixo (até 400 m²): R$ ${tabela.valor_fixo.toFixed(2)}</em></p>
+        `;
+    } else {
+        const excedente = metragem - 400;
+        valorFinal = tabela.valor_fixo + (excedente * tabela.valor_m2);
+        resultadoDiv.innerHTML = `
+            <p>Quantidade de Parcelas: ${tabela.parcelas}</p>
+            <p>Valor da Parcela: R$ ${valorFinal.toFixed(2)}</p>
+            <p>Valor Final Calculado: R$ ${valorFinal.toFixed(2)}</p>
+            <p><em>Valor por m² (acima de 400 m²): R$ ${tabela.valor_m2.toFixed(2)}</em></p>
+        `;
+    }
 }
