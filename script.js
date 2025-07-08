@@ -1,86 +1,91 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const tipoSelect = document.getElementById("tipo");
-    const pagamentoSelect = document.getElementById("pagamento");
-    const metragemInput = document.getElementById("metragem");
+function calcular() {
+    const tipo = document.getElementById("tipo").value;
+    const metragem = parseFloat(document.getElementById("metragem").value);
+    const pagamento = document.getElementById("pagamento").value;
+
     const resultadoDiv = document.getElementById("resultado");
 
-    let dados = {};
-    fetch("tabelas.json")
-        .then(res => res.json())
-        .then(json => {
-            dados = json;
-            dados.tiposUnicos.forEach(tipo => {
-                const opt = document.createElement("option");
-                opt.value = tipo;
-                opt.textContent = tipo;
-                tipoSelect.appendChild(opt);
-            });
-            dados.pagamentosUnicos.forEach(pag => {
-                const opt = document.createElement("option");
-                opt.value = pag;
-                opt.textContent = pag;
-                pagamentoSelect.appendChild(opt);
-            });
-        });
+    if (!tipo || !metragem || !pagamento) {
+        resultadoDiv.innerHTML = "<p>Preencha todos os campos para calcular.</p>";
+        return;
+    }
 
-    document.getElementById("calcForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const tipo = tipoSelect.value;
-        const metragem = parseFloat(metragemInput.value);
-        const pagamento = pagamentoSelect.value;
+    let valorFixo = 0;
+    let valorExcedente = 0;
+    let faixa = null;
 
-        if (!tipo || !metragem || !pagamento) {
-            resultadoDiv.innerHTML = "<strong>Preencha todos os campos.</strong>";
-            return;
+    const tabelaFixa = {
+        "Residencial": {
+            "À vista": 2100,
+            "6x": 2400,
+            "12x": 2760,
+            "20x": 3100,
+            "Pagamento Final": 3100
+        },
+        "Não Residencial": {
+            "À vista": 3000,
+            "6x": 3600,
+            "12x": 4200,
+            "20x": 5000,
+            "Pagamento Final": 5000
         }
+    };
 
-        let valorFinal = 0;
-        let parcelas = 1;
-        let demonstrativo = "";
-
-        if (metragem <= 400) {
-            const linha = dados.valoresFixos.find(v =>
-                v.Tipo === tipo && v.Pagamento === pagamento);
-            if (linha) {
-                valorFinal = linha.Valor;
-                demonstrativo += `Valor fixo (até 400 m²): R$ ${valorFinal.toFixed(2)}`;
-            }
-        } else {
-            const base = dados.valoresFixos.find(v => v.Tipo === tipo && v.Pagamento === pagamento);
-            const excedente = metragem - 400;
-            const faixa = dados.valoresExcedente.find(f =>
-                f.Tipo === tipo &&
-                f.Pagamento === pagamento &&
-                excedente >= f.FaixaMin &&
-                excedente <= f.FaixaMax);
-            if (base && faixa) {
-                const valorExcedente = excedente * faixa.ValorM2;
-                valorFinal = base.Valor + valorExcedente;
-                demonstrativo = `
-                    Valor base (400 m²): R$ ${base.Valor.toFixed(2)}<br>
-                    Excedente: ${excedente} m² × R$ ${faixa.ValorM2.toFixed(2)} = R$ ${valorExcedente.toFixed(2)}<br>
-                    <strong>Total: R$ ${valorFinal.toFixed(2)}</strong>
-                `;
-            } else {
-                demonstrativo = "Não foi possível calcular com os dados informados.";
-            }
+    const tabelaExcedente = {
+        "Residencial": {
+            "À vista": [
+                { min: 401, max: 1500, valor: 0.67 },
+                { min: 1501, max: 2500, valor: 0.6 },
+                { min: 2501, max: 3500, valor: 0.52 }
+            ]
         }
+    };
 
-        if (pagamento.includes("x")) parcelas = parseInt(pagamento.replace("x", ""));
+    if (metragem <= 400) {
+        valorFixo = tabelaFixa[tipo][pagamento];
         resultadoDiv.innerHTML = `
-            Quantidade de Parcelas: ${parcelas}<br>
-            Valor da Parcela: R$ ${(valorFinal / parcelas).toFixed(2)}<br>
-            Valor Final Calculado: R$ ${valorFinal.toFixed(2)}<br><br>
-            <em>${demonstrativo}</em>
+        <p>Quantidade de Parcelas: 1</p>
+        <p>Valor da Parcela: R$ ${valorFixo.toFixed(2)}</p>
+        <p>Valor Final Calculado: R$ ${valorFixo.toFixed(2)}</p>
+        <p><i>Valor fixo (até 400 m²): R$ ${valorFixo.toFixed(2)}</i></p>
         `;
-    });
-});
+        return;
+    }
 
+    const faixas = tabelaExcedente[tipo]?.[pagamento] || [];
+    for (let f of faixas) {
+        if (metragem >= f.min && metragem <= f.max) {
+            faixa = f;
+            break;
+        }
+    }
 
-// Função para limpar campos e resultado
-document.getElementById("limparBtn").addEventListener("click", () => {
-    document.getElementById("tipo").selectedIndex = 0;
-    document.getElementById("pagamento").selectedIndex = 0;
+    if (!faixa) {
+        resultadoDiv.innerHTML = `
+        <p>Quantidade de Parcelas: 1</p>
+        <p>Valor da Parcela: R$ 0.00</p>
+        <p>Valor Final Calculado: R$ 0.00</p>
+        <p><i>Não foi possível calcular com os dados informados.</i></p>
+        `;
+        return;
+    }
+
+    valorFixo = tabelaFixa[tipo][pagamento];
+    valorExcedente = (metragem - 400) * faixa.valor;
+    const valorFinal = valorFixo + valorExcedente;
+
+    resultadoDiv.innerHTML = `
+    <p>Quantidade de Parcelas: 1</p>
+    <p>Valor da Parcela: R$ ${valorFinal.toFixed(2)}</p>
+    <p>Valor Final Calculado: R$ ${valorFinal.toFixed(2)}</p>
+    <p><i>Valor fixo (até 400 m²): R$ ${valorFixo.toFixed(2)}</i><br>
+    Excedente (${metragem - 400} m² × R$ ${faixa.valor.toFixed(2)}): R$ ${valorExcedente.toFixed(2)}</p>
+    `;
+}
+
+function limpar() {
+    document.getElementById("tipo").value = "Residencial";
     document.getElementById("metragem").value = "";
+    document.getElementById("pagamento").value = "À vista";
     document.getElementById("resultado").innerHTML = "";
-});
+}
