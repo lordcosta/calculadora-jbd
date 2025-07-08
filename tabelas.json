@@ -1,14 +1,11 @@
+
 {
-  "fixos": [
-    {"tipo": "Residencial", "pagamento": "À vista", "valor": 2100},
-    {"tipo": "Residencial", "pagamento": "6x", "valor": 2400},
-    {"tipo": "Residencial", "pagamento": "12x", "valor": 2700},
-    {"tipo": "Residencial", "pagamento": "20x", "valor": 3100},
-    {"tipo": "Residencial", "pagamento": "Pagamento Final", "valor": 3100},
-    {"tipo": "Não Residencial", "pagamento": "À vista", "valor": 3000},
-    {"tipo": "Não Residencial", "pagamento": "6x", "valor": 3600},
-    {"tipo": "Não Residencial", "pagamento": "12x", "valor": 4200},
-    {"tipo": "Não Residencial", "pagamento": "Pagamento Final", "valor": 5000}
-  ],
-  "excedente": []
+  "Residencial": {
+    "valor_fixo": 2100,
+    "valor_m2": 6.5
+  },
+  "Não Residencial": {
+    "valor_fixo": 3200,
+    "valor_m2": 8.7
+  }
 }

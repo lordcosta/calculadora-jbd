@@ -1,36 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora JBD</title>
-  <link rel="stylesheet" href="style.css?v=1.0.3" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <img src="logo.png" alt="Logo JBD" class="logo" />
     <h1>Simule aqui o Valor para Regularizar seu Lote</h1>
-    <label>Tipo de Imóvel:</label>
+
+    <label for="tipo">Tipo de Imóvel:</label>
     <select id="tipo">
-      <option>Residencial</option>
-      <option>Não Residencial</option>
+      <option value="Residencial">Residencial</option>
+      <option value="Não Residencial">Não Residencial</option>
     </select>
-    <label>Metragem Total (m²):</label>
-    <input type="number" id="metragem" />
-    <label>Forma de Pagamento:</label>
-    <select id="pagamento">
-      <option>À vista</option>
-      <option>6x</option>
-      <option>12x</option>
-      <option>20x</option>
-      <option>Pagamento Final</option>
+
+    <label for="metragem">Metragem Total (m²):</label>
+    <input type="number" id="metragem" min="0" />
+
+    <label for="formaPagamento">Forma de Pagamento:</label>
+    <select id="formaPagamento">
+      <option value="À vista">À vista</option>
+      <option value="Parcelado em até 6x">Parcelado em até 6x</option>
+      <option value="Parcelado em até 12x">Parcelado em até 12x</option>
     </select>
+
     <div class="buttons">
       <button onclick="calcular()">CALCULAR</button>
-      <button onclick="limpar()">LIMPAR</button>
+      <button onclick="limparCampos()">LIMPAR</button>
     </div>
+
     <div id="resultado" class="resultado"></div>
-    <footer>Versão: v1.0.3</footer>
+    <div class="versao">Versão: v1.0.4</div>
   </div>
   <script src="script.js"></script>
 </body>

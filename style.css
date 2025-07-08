@@ -1,49 +1,67 @@
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #f5f5ff;
-  color: #000;
-  text-align: center;
+  background: #f5f5ff;
   margin: 0;
+  padding: 0;
+  text-align: center;
 }
 .container {
-  margin: 0 auto;
-  padding: 20px;
   max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  border-radius: 15px;
 }
 .logo {
-  width: 100px;
+  max-width: 120px;
   margin-bottom: 20px;
 }
-select, input {
-  margin: 5px;
+h1 {
+  font-size: 22px;
+  margin-bottom: 30px;
+  color: #002f87;
+}
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  text-align: left;
+}
+select, input[type="number"] {
+  width: 100%;
   padding: 10px;
-  width: 80%;
-  font-size: 16px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 .buttons {
-  margin: 15px 0;
+  margin-top: 25px;
 }
 button {
-  background-color: #003399;
+  background-color: #002f87;
   color: white;
-  border: none;
   padding: 12px 20px;
-  font-size: 16px;
-  margin: 5px;
-  border-radius: 5px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  margin: 5px;
+  font-weight: bold;
+}
+button:hover {
+  background-color: #001f5e;
 }
 .resultado {
-  background: #eef;
-  padding: 10px;
-  margin-top: 20px;
-  border-radius: 8px;
+  margin-top: 30px;
+  padding: 15px;
+  background: #e8e8ff;
+  border-radius: 10px;
+  font-size: 15px;
 }
-footer {
+.versao {
   margin-top: 20px;
-  font-size: 0.9em;
+  font-size: 13px;
   color: #666;
 }
