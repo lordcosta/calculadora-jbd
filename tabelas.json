@@ -1,0 +1,88 @@
+{
+  "valoresFixos": [
+    {
+      "Tipo": "Residencial",
+      "Pagamento": "À vista",
+      "Valor": 2100
+    },
+    {
+      "Tipo": "Residencial",
+      "Pagamento": "6x",
+      "Valor": 2400
+    },
+    {
+      "Tipo": "Residencial",
+      "Pagamento": "12x",
+      "Valor": 2760
+    },
+    {
+      "Tipo": "Residencial",
+      "Pagamento": "20x",
+      "Valor": 3100
+    },
+    {
+      "Tipo": "Residencial",
+      "Pagamento": "Pagamento Final",
+      "Valor": 3100
+    },
+    {
+      "Tipo": "Não Residencial",
+      "Pagamento": "À vista",
+      "Valor": 3000
+    },
+    {
+      "Tipo": "Não Residencial",
+      "Pagamento": "6x",
+      "Valor": 3600
+    },
+    {
+      "Tipo": "Não Residencial",
+      "Pagamento": "12x",
+      "Valor": 4200
+    },
+    {
+      "Tipo": "Não Residencial",
+      "Pagamento": "20x",
+      "Valor": 5000
+    },
+    {
+      "Tipo": "Não Residencial",
+      "Pagamento": "Pagamento Final",
+      "Valor": 5000
+    }
+  ],
+  "valoresExcedente": [
+    {
+      "Tipo": "Residencial",
+      "FaixaMin": 401,
+      "FaixaMax": 1500,
+      "Pagamento": "À vista",
+      "ValorM2": 0.67
+    },
+    {
+      "Tipo": "Residencial",
+      "FaixaMin": 1501,
+      "FaixaMax": 2500,
+      "Pagamento": "À vista",
+      "ValorM2": 0.6
+    },
+    {
+      "Tipo": "Residencial",
+      "FaixaMin": 2501,
+      "FaixaMax": 3500,
+      "Pagamento": "À vista",
+      "ValorM2": 0.52
+    }
+  ],
+  "tiposUnicos": [
+    "Residencial",
+    "Não Residencial"
+  ],
+  "pagamentosUnicos": [
+    "À vista",
+    "6x",
+    "12x",
+    "20x",
+    "Pagamento Final"
+  ]
+}
