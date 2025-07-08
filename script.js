@@ -75,3 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     });
 });
+
+
+// Função para limpar campos e resultado
+document.getElementById("limparBtn").addEventListener("click", () => {
+    document.getElementById("tipo").selectedIndex = 0;
+    document.getElementById("pagamento").selectedIndex = 0;
+    document.getElementById("metragem").value = "";
+    document.getElementById("resultado").innerHTML = "";
+});
