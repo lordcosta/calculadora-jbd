@@ -1,76 +1,80 @@
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f4fb;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6ff;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-    background: white;
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #ccc;
-}
-
-.logo {
-    width: 100px;
-    margin-bottom: 20px;
+  max-width: 600px;
+  background: white;
+  margin: 40px auto;
+  padding: 20px 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 h1 {
-    font-size: 22px;
-    margin-bottom: 30px;
-    color: #00327d;
+  color: #003399;
+  margin-bottom: 20px;
 }
 
 label {
-    display: block;
-    font-weight: bold;
-    margin-top: 15px;
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: left;
 }
 
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    font-size: 16px;
+select, input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
 }
 
 .botoes {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 button {
-    flex: 1;
-    padding: 12px;
-    background-color: #00327d;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  background: #003399;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #0050b3;
+  background: #002080;
 }
 
 .resultado {
-    background: #eaeaff;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 8px;
+  margin-top: 20px;
+  padding: 20px;
+  background: #eef;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.logo {
+  max-width: 120px;
+  margin: 0 auto 20px;
+  display: block;
 }
 
 footer {
-    margin-top: 30px;
-    font-size: 14px;
-    color: gray;
+  margin-top: 30px;
+  font-size: 0.9em;
+  color: #666;
 }
