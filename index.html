@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora JBD</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=1.0.3" />
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="Logo JBD" class="logo">
+    <img src="logo.png" alt="Logo JBD" class="logo" />
     <h1>Simule aqui o Valor para Regularizar seu Lote</h1>
     <label>Tipo de Imóvel:</label>
     <select id="tipo">
@@ -25,10 +25,12 @@
       <option>20x</option>
       <option>Pagamento Final</option>
     </select>
-    <button onclick="calcular()">CALCULAR</button>
-    <button onclick="limpar()">LIMPAR</button>
+    <div class="buttons">
+      <button onclick="calcular()">CALCULAR</button>
+      <button onclick="limpar()">LIMPAR</button>
+    </div>
     <div id="resultado" class="resultado"></div>
-    <footer>Versão: v1.0.2</footer>
+    <footer>Versão: v1.0.3</footer>
   </div>
   <script src="script.js"></script>
 </body>
