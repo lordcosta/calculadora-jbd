@@ -1,3 +1,5 @@
+// Versão atualizada com IDs padronizados e botão corrigido
+
 // Função para formatar valor em reais
 function formatarValor(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -11,7 +13,7 @@ async function carregarMunicipio(municipio) {
 
 // Função para atualizar as opções de forma de pagamento
 function atualizarFormasPagamento(dados, tipo, metragem) {
-    const selectForma = document.getElementById('formaPagamento');
+    const selectForma = document.getElementById('forma_pagamento');
     selectForma.innerHTML = '';
 
     if (!metragem || metragem <= 0) return;
@@ -95,9 +97,12 @@ console.log('Calculadora JBD - Versão JS v2.1.3');
 
 // Eventos principais
 const selectMunicipio = document.getElementById('municipio');
-const selectTipo = document.getElementById('tipoImovel');
+const selectTipo = document.getElementById('tipo');
 const inputMetragem = document.getElementById('metragem');
-const selectForma = document.getElementById('formaPagamento');
+const selectForma = document.getElementById('forma_pagamento');
+const btnCalcular = document.getElementById('calcular');
+const btnLimpar = document.getElementById('limpar');
+
 let dadosAtuais = null;
 
 selectMunicipio.addEventListener('change', async () => {
@@ -117,7 +122,7 @@ inputMetragem.addEventListener('input', () => {
     atualizarFormasPagamento(dadosAtuais, selectTipo.value, parseInt(inputMetragem.value || 0));
 });
 
-document.getElementById('calcular').addEventListener('click', () => {
+btnCalcular.addEventListener('click', () => {
     const tipo = selectTipo.value;
     const metragem = parseInt(inputMetragem.value);
     const forma = selectForma.value;
@@ -128,7 +133,7 @@ document.getElementById('calcular').addEventListener('click', () => {
     if (resultado) atualizarResultado(tipo, metragem, forma, resultado);
 });
 
-document.getElementById('limpar').addEventListener('click', () => {
+btnLimpar.addEventListener('click', () => {
     selectMunicipio.selectedIndex = 0;
     selectTipo.selectedIndex = 0;
     inputMetragem.value = '';
