@@ -7,8 +7,14 @@ function formatarValor(valor) {
 
 // Função para carregar os dados do município selecionado
 async function carregarMunicipio(municipio) {
-    const response = await fetch(`data/${municipio}.json`);
-    return await response.json();
+     try {
+        const response = await fetch(`data/${municipio}.json`);
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao carregar o JSON do município:", error);
+        alert("Tabela de valores para este município ainda não está disponível.");
+        return null;
+    }
 }
 
 // Função para atualizar as opções de forma de pagamento
