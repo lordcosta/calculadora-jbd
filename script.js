@@ -16,14 +16,18 @@ function atualizarFormasPagamento(dados, tipo, metragem) {
 
     if (!metragem || metragem <= 0) return;
 
-    let opcoes = [];
-    if (metragem <= 400) {
-        opcoes = dados[tipo.toLowerCase()].fixo || [];
-    } else {
-        opcoes = dados[tipo.toLowerCase()].excedente || [];
+    const tipoFaixa = metragem <= 400 ? tipo.toLowerCase() : tipo.toLowerCase() + '_acima';
+    const faixa = dados.faixas.find(f => f.tipo === tipoFaixa);
+    if (!faixa) return;
+
+    let formas = [];
+    if (faixa.formas_pagamento) {
+        formas = faixa.formas_pagamento;
+    } else if (faixa.tabela_excedente) {
+        formas = Object.keys(faixa.tabela_excedente[0].valores).map(nome => ({ nome }));
     }
 
-    opcoes.forEach(forma => {
+    formas.forEach(forma => {
         const option = document.createElement('option');
         option.value = forma.nome;
         option.text = forma.nome;
@@ -33,23 +37,35 @@ function atualizarFormasPagamento(dados, tipo, metragem) {
 
 // Função para calcular valor
 function calcularValor(dados, tipo, metragem, formaNome) {
-    const categoria = dados[tipo.toLowerCase()];
+    const tipoBase = tipo.toLowerCase();
+    const tipoFaixa = metragem <= 400 ? tipoBase : tipoBase + '_acima';
+
+    const faixa = dados.faixas.find(f => f.tipo === tipoFaixa);
+    if (!faixa) return null;
+
     let valorBase = 0;
     let excedente = 0;
     let valorTotal = 0;
     let parcelas = 1;
 
-    if (metragem <= 400) {
-        const forma = categoria.fixo.find(f => f.nome === formaNome);
-        valorTotal = forma.total;
+    if (metragem <= 400 && faixa.formas_pagamento) {
+        const forma = faixa.formas_pagamento.find(f => f.nome === formaNome);
+        if (!forma) return null;
+        valorTotal = forma.valor_total;
         parcelas = forma.parcelas;
-    } else {
-        const forma = categoria.excedente.find(f => f.nome === formaNome);
-        parcelas = forma.parcelas;
+    } else if (faixa.tabela_excedente) {
+        const base = dados.faixas.find(f => f.tipo === tipoBase);
+        const formaBase = base.formas_pagamento.find(f => f.nome === formaNome);
+        if (!formaBase) return null;
+        valorBase = formaBase.valor_total;
+        parcelas = formaBase.parcelas;
 
-        const faixa = categoria.faixas.find(f => metragem >= f.de && metragem <= f.ate);
-        excedente = (metragem - 400) * faixa.valores[formaNome];
-        valorBase = faixa.valor_fixo;
+        const faixaExcedente = faixa.tabela_excedente.find(fx => metragem >= fx.faixa[0] && metragem <= fx.faixa[1]);
+        if (!faixaExcedente) return null;
+
+        const valor_m2 = faixaExcedente.valores[formaNome];
+        const metrosExcedentes = metragem - 400;
+        excedente = metrosExcedentes * valor_m2;
         valorTotal = valorBase + excedente;
     }
 
@@ -107,7 +123,7 @@ document.getElementById('calcular').addEventListener('click', () => {
     if (!dadosAtuais || !tipo || !metragem || !forma) return;
 
     const resultado = calcularValor(dadosAtuais, tipo, metragem, forma);
-    atualizarResultado(tipo, metragem, forma, resultado);
+    if (resultado) atualizarResultado(tipo, metragem, forma, resultado);
 });
 
 document.getElementById('limpar').addEventListener('click', () => {
