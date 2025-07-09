@@ -1,4 +1,4 @@
-// Versão atualizada com IDs padronizados e botão corrigido
+// Versão atualizada com IDs padronizados e botão corrigido 
 
 // Função para formatar valor em reais
 function formatarValor(valor) {
@@ -7,7 +7,7 @@ function formatarValor(valor) {
 
 // Função para carregar os dados do município selecionado
 async function carregarMunicipio(municipio) {
-     try {
+    try {
         const response = await fetch(`data/${municipio}.json`);
         return await response.json();
     } catch (error) {
@@ -120,18 +120,6 @@ fetch("data/municipios.json")
         select.innerHTML = '<option value="">Erro ao carregar municípios</option>';
     });
 
-// Função para carregar os dados do município selecionado
-async function carregarMunicipio(municipio) {
-    try {
-        const response = await fetch(`data/${municipio}.json`);
-        return await response.json();
-    } catch (error) {
-        console.error("Erro ao carregar o JSON do município:", error);
-        alert("Tabela de valores para este município ainda não está disponível.");
-        return null;
-    }
-}
-
 // Eventos principais
 const selectMunicipio = document.getElementById('municipio');
 const selectTipo = document.getElementById('tipo');
@@ -178,3 +166,27 @@ btnLimpar.addEventListener('click', () => {
     document.getElementById('resultado').innerHTML = '';
     dadosAtuais = null;
 });
+
+// NOVO: Botão que gera link para adesão com dados preenchidos
+const btnAdesao = document.getElementById('botaoAdesao');
+if (btnAdesao) {
+    btnAdesao.addEventListener('click', () => {
+        const tipo = selectTipo.value;
+        const metragem = parseInt(inputMetragem.value);
+        const forma = selectForma.value;
+
+        if (!dadosAtuais || !tipo || !metragem || !forma) return;
+
+        const resultado = calcularValor(dadosAtuais, tipo, metragem, forma);
+        if (!resultado) return;
+
+        // Monta URL com os dados calculados para o formulário de adesão
+        const url = new URL('https://adesao-jbd.vercel.app/');
+        url.searchParams.set('forma_pagamento', forma);
+        url.searchParams.set('qtd_parcelas', resultado.parcelas);
+        url.searchParams.set('valor_parcela', resultado.valorParcela.toFixed(2));
+        url.searchParams.set('valor_total', resultado.valorTotal.toFixed(2));
+
+        window.open(url.toString(), '_blank');
+    });
+}
