@@ -101,6 +101,37 @@ function atualizarResultado(tipo, metragem, forma, resultado) {
 
 console.log('Calculadora JBD - Versão JS v2.1.3');
 
+// Carregar lista de municípios ao iniciar
+fetch("data/municipios.json")
+    .then(res => res.json())
+    .then(lista => {
+        const select = document.getElementById("municipio");
+        select.innerHTML = '<option value="">Selecione</option>';
+        lista.forEach(m => {
+            const opt = document.createElement("option");
+            opt.value = m.valor;
+            opt.textContent = m.label;
+            select.appendChild(opt);
+        });
+    })
+    .catch(erro => {
+        console.error("Erro ao carregar municípios:", erro);
+        const select = document.getElementById("municipio");
+        select.innerHTML = '<option value="">Erro ao carregar municípios</option>';
+    });
+
+// Função para carregar os dados do município selecionado
+async function carregarMunicipio(municipio) {
+    try {
+        const response = await fetch(`data/${municipio}.json`);
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao carregar o JSON do município:", error);
+        alert("Tabela de valores para este município ainda não está disponível.");
+        return null;
+    }
+}
+
 // Eventos principais
 const selectMunicipio = document.getElementById('municipio');
 const selectTipo = document.getElementById('tipo');
