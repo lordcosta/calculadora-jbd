@@ -1,0 +1,34 @@
+[
+    {
+        "label": "Salto do Itararé-PR",
+        "valor": "salto_do_itarare"
+    },
+    {
+        "label": "Clevelândia-PR",
+        "valor": "clevelandia"
+    },
+    {
+        "label": "Imbituva-PR",
+        "valor": "imbituva"
+    },
+    {
+        "label": "Simonésia-MG",
+        "valor": "simonesia"
+    },
+    {
+        "label": "Siqueira Campos-PR",
+        "valor": "siqueira_campos"
+    },
+    {
+        "label": "Wenceslau Brás-PR",
+        "valor": "wenceslau_bras"
+    },
+    {
+        "label": "Inácio Martins-PR",
+        "valor": "inacio_martins"
+    },
+    {
+        "label": "Cachoeiro de Itapemirim-ES",
+        "valor": "cachoeiro"
+    }
+]
