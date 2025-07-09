@@ -1,117 +1,118 @@
+// Função para formatar valor em reais
+function formatarValor(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
 
-let dadosMunicipio = {};
+// Função para carregar os dados do município selecionado
+async function carregarMunicipio(municipio) {
+    const response = await fetch(`dados/${municipio}.json`);
+    return await response.json();
+}
 
-function atualizarFormasPagamento(tipoBase, metragem) {
-    const formaSelect = document.getElementById('forma_pagamento');
-    formaSelect.innerHTML = '';
+// Função para atualizar as opções de forma de pagamento
+function atualizarFormasPagamento(dados, tipo, metragem) {
+    const selectForma = document.getElementById('formaPagamento');
+    selectForma.innerHTML = '';
 
-    if (!dadosMunicipio || !tipoBase || isNaN(metragem)) return;
-
-    const tipo = metragem <= 400 ? tipoBase : tipoBase + "_acima";
-    const faixa = dadosMunicipio.faixas.find(f => f.tipo === tipo);
-    if (!faixa) return;
-
-    let formas = [];
-
-    if (faixa.formas_pagamento) {
-        formas = faixa.formas_pagamento.map(fp => fp.nome);
-    } else if (faixa.tabela_excedente) {
-        formas = Object.keys(faixa.tabela_excedente[0].valores);
+    let opcoes = [];
+    if (metragem <= 400) {
+        opcoes = dados[tipo.toLowerCase()].fixo;
+    } else {
+        opcoes = dados[tipo.toLowerCase()].excedente;
     }
 
-    formas = [...new Set(formas)];
-
-    formas.forEach(nome => {
-        const opt = document.createElement('option');
-        opt.value = nome;
-        opt.textContent = nome;
-        formaSelect.appendChild(opt);
+    opcoes.forEach(forma => {
+        const option = document.createElement('option');
+        option.value = forma.nome;
+        option.text = forma.nome;
+        selectForma.appendChild(option);
     });
 }
 
-document.getElementById('municipio').addEventListener('change', function () {
-    const municipio = this.value;
-    if (!municipio) return;
+// Função para calcular valor
+function calcularValor(dados, tipo, metragem, formaNome) {
+    const categoria = dados[tipo.toLowerCase()];
+    let valorBase = 0;
+    let excedente = 0;
+    let valorTotal = 0;
+    let parcelas = 1;
 
-    fetch(`data/${municipio}.json`)
-        .then(res => res.json())
-        .then(data => {
-            dadosMunicipio = data;
-            limpar(); // reset após carregar novo município
-        });
-});
-
-document.getElementById('tipo').addEventListener('change', function () {
-    const tipo = this.value;
-    const metragem = parseFloat(document.getElementById('metragem').value);
-    if (tipo && !isNaN(metragem)) {
-        atualizarFormasPagamento(tipo, metragem);
-    }
-});
-
-document.getElementById('metragem').addEventListener('input', function () {
-    const metragem = parseFloat(this.value);
-    const tipo = document.getElementById('tipo').value;
-    if (tipo && !isNaN(metragem)) {
-        atualizarFormasPagamento(tipo, metragem);
-    }
-});
-
-function calcular() {
-    const tipoBase = document.getElementById('tipo').value;
-    const metragem = parseFloat(document.getElementById('metragem').value);
-    const formaNome = document.getElementById('forma_pagamento').value;
-
-    if (!dadosMunicipio || !tipoBase || !formaNome || isNaN(metragem)) return;
-
-    let valorBase = 0, excedente = 0, valorTotal = 0, parcelas = 1;
-
-    const tipo = metragem <= 400 ? tipoBase : tipoBase + "_acima";
-    const faixa = dadosMunicipio.faixas.find(f => f.tipo === tipo);
-    if (!faixa) return;
-
-    if (tipo.endsWith("_acima")) {
-        const faixaBase = dadosMunicipio.faixas.find(f => f.tipo === tipoBase);
-        if (!faixaBase) return;
-        const pagamentoBase = faixaBase.formas_pagamento.find(fp => fp.nome === formaNome);
-        if (!pagamentoBase) return;
-
-        valorBase = pagamentoBase.valor_total;
-
-        const faixaExcedente = faixa.tabela_excedente.find(fx =>
-            metragem >= fx.faixa[0] && metragem <= fx.faixa[1]
-        );
-        if (!faixaExcedente) return;
-
-        const valor_m2 = faixaExcedente.valores[formaNome];
-        const metrosExcedentes = metragem - 400;
-        excedente = metrosExcedentes * valor_m2;
-        valorTotal = valorBase + excedente;
-        parcelas = pagamentoBase.parcelas;
+    if (metragem <= 400) {
+        const forma = categoria.fixo.find(f => f.nome === formaNome);
+        valorTotal = forma.total;
+        parcelas = forma.parcelas;
     } else {
-        const pagamento = faixa.formas_pagamento.find(fp => fp.nome === formaNome);
-        if (!pagamento) return;
-        valorBase = pagamento.valor_total;
-        valorTotal = valorBase;
-        parcelas = pagamento.parcelas;
+        const forma = categoria.excedente.find(f => f.nome === formaNome);
+        parcelas = forma.parcelas;
+
+        const faixa = categoria.faixas.find(f => metragem >= f.de && metragem <= f.ate);
+        excedente = (metragem - 400) * faixa.valores[formaNome];
+        valorBase = faixa.valor_fixo;
+        valorTotal = valorBase + excedente;
     }
 
-    const valorParcela = valorTotal / parcelas;
+    return {
+        valorBase,
+        excedente,
+        valorTotal,
+        parcelas,
+        valorParcela: valorTotal / parcelas
+    };
+}
 
+// Função para atualizar o resultado na tela
+function atualizarResultado(tipo, metragem, forma, resultado) {
     document.getElementById('resultado').innerHTML = `
-        <strong>Tipo:</strong> ${tipoBase.charAt(0).toUpperCase() + tipoBase.slice(1)}<br>
+        <strong>Tipo:</strong> ${tipo}<br>
         <strong>Metragem:</strong> ${metragem} m²<br>
-        <strong>Forma de Pagamento:</strong> ${formaNome}<br>
-        <strong>Valor Base:</strong> R$ ${valorBase.toFixed(2)}<br>
-        <strong>Excedente:</strong> R$ ${excedente.toFixed(2)}<br>
-        <strong>Total:</strong> R$ ${valorTotal.toFixed(2)}<br>
-        <strong>Parcelas:</strong> ${parcelas} x R$ ${valorParcela.toFixed(2)}
+        <strong>Forma de Pagamento:</strong> ${forma}<br>
+        <strong>Valor Base:</strong> ${formatarValor(resultado.valorBase)}<br>
+        <strong>Excedente:</strong> ${formatarValor(resultado.excedente)}<br>
+        <strong>Total:</strong> ${formatarValor(resultado.valorTotal)}<br>
+        <strong>Parcelas:</strong> ${resultado.parcelas} x ${formatarValor(resultado.valorParcela)}
     `;
 }
 
-function limpar() {
-    document.getElementById('tipo').value = 'residencial';
-    document.getElementById('metragem').value = '';
+// Eventos principais
+const selectMunicipio = document.getElementById('municipio');
+const selectTipo = document.getElementById('tipoImovel');
+const inputMetragem = document.getElementById('metragem');
+const selectForma = document.getElementById('formaPagamento');
+let dadosAtuais = null;
+
+selectMunicipio.addEventListener('change', async () => {
+    const municipio = selectMunicipio.value;
+    if (!municipio) return;
+    dadosAtuais = await carregarMunicipio(municipio);
+    atualizarFormasPagamento(dadosAtuais, selectTipo.value, parseInt(inputMetragem.value || 0));
+});
+
+selectTipo.addEventListener('change', () => {
+    if (!dadosAtuais) return;
+    atualizarFormasPagamento(dadosAtuais, selectTipo.value, parseInt(inputMetragem.value || 0));
+});
+
+inputMetragem.addEventListener('input', () => {
+    if (!dadosAtuais) return;
+    atualizarFormasPagamento(dadosAtuais, selectTipo.value, parseInt(inputMetragem.value || 0));
+});
+
+document.getElementById('calcular').addEventListener('click', () => {
+    const tipo = selectTipo.value;
+    const metragem = parseInt(inputMetragem.value);
+    const forma = selectForma.value;
+
+    if (!dadosAtuais || !tipo || !metragem || !forma) return;
+
+    const resultado = calcularValor(dadosAtuais, tipo, metragem, forma);
+    atualizarResultado(tipo, metragem, forma, resultado);
+});
+
+document.getElementById('limpar').addEventListener('click', () => {
+    selectMunicipio.selectedIndex = 0;
+    selectTipo.selectedIndex = 0;
+    inputMetragem.value = '';
+    selectForma.innerHTML = '';
     document.getElementById('resultado').innerHTML = '';
-    document.getElementById('forma_pagamento').innerHTML = '';
-}
+    dadosAtuais = null;
+});
