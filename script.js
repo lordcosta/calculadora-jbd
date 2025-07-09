@@ -25,7 +25,7 @@ function calcular() {
     const metragem = parseFloat(document.getElementById('metragem').value);
     const formaNome = document.getElementById('forma_pagamento').value;
 
-    if (!dadosMunicipio || !tipo || !formaNome || !metragem) return;
+    if (!dadosMunicipio || !tipo || !formaNome || isNaN(metragem)) return;
 
     const faixa = dadosMunicipio.faixas.find(f => f.tipo === tipo);
     const forma = dadosMunicipio.formas_pagamento.find(f => f.nome === formaNome);
@@ -44,13 +44,20 @@ function calcular() {
 
     const valorParcela = valorTotal / forma.parcelas;
 
-    document.getElementById('demonstrativo').innerHTML = `
-        Tipo: ${tipo}<br>
-        Metragem: ${metragem} m²<br>
-        Forma de Pagamento: ${forma.nome}<br>
-        Valor Base: R$ ${valorBase.toFixed(2)}<br>
-        Excedente: R$ ${excedente.toFixed(2)}<br>
-        Total: R$ ${valorTotal.toFixed(2)}<br>
-        Parcelas: ${forma.parcelas} x R$ ${valorParcela.toFixed(2)}
+    document.getElementById('resultado').innerHTML = `
+        <strong>Tipo:</strong> ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}<br>
+        <strong>Metragem:</strong> ${metragem} m²<br>
+        <strong>Forma de Pagamento:</strong> ${forma.nome}<br>
+        <strong>Valor Base:</strong> R$ ${valorBase.toFixed(2)}<br>
+        <strong>Excedente:</strong> R$ ${excedente.toFixed(2)}<br>
+        <strong>Total:</strong> R$ ${valorTotal.toFixed(2)}<br>
+        <strong>Parcelas:</strong> ${forma.parcelas} x R$ ${valorParcela.toFixed(2)}
     `;
+}
+
+function limpar() {
+    document.getElementById('tipo').value = 'residencial';
+    document.getElementById('metragem').value = '';
+    document.getElementById('forma_pagamento').innerHTML = '';
+    document.getElementById('resultado').innerHTML = '';
 }
