@@ -5,7 +5,7 @@ function formatarValor(valor) {
 
 // Função para carregar os dados do município selecionado
 async function carregarMunicipio(municipio) {
-    const response = await fetch(`dados/${municipio}.json`);
+    const response = await fetch(`data/${municipio}.json`);
     return await response.json();
 }
 
