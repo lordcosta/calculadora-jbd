@@ -14,11 +14,13 @@ function atualizarFormasPagamento(dados, tipo, metragem) {
     const selectForma = document.getElementById('formaPagamento');
     selectForma.innerHTML = '';
 
+    if (!metragem || metragem <= 0) return;
+
     let opcoes = [];
     if (metragem <= 400) {
-        opcoes = dados[tipo.toLowerCase()].fixo;
+        opcoes = dados[tipo.toLowerCase()].fixo || [];
     } else {
-        opcoes = dados[tipo.toLowerCase()].excedente;
+        opcoes = dados[tipo.toLowerCase()].excedente || [];
     }
 
     opcoes.forEach(forma => {
