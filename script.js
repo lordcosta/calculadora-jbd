@@ -91,6 +91,8 @@ function atualizarResultado(tipo, metragem, forma, resultado) {
     `;
 }
 
+console.log('Calculadora JBD - Versão JS v2.1.3');
+
 // Eventos principais
 const selectMunicipio = document.getElementById('municipio');
 const selectTipo = document.getElementById('tipoImovel');
