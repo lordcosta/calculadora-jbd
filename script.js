@@ -35,13 +35,13 @@ function calcular() {
     let excedente = 0;
 
     if (metragem <= faixa.limite) {
-        valorTotal = faixa.valor_fixo;
-    } else {
-        valorBase = faixa.valor_fixo;
-        excedente = (metragem - faixa.limite) * faixa.valor_m2_excedente;
-        valorTotal = valorBase + excedente;
-    }
-
+    valorBase = faixa.valor_fixo;
+    valorTotal = valorBase;
+} else {
+    valorBase = faixa.valor_fixo;
+    excedente = (metragem - faixa.limite) * faixa.valor_m2_excedente;
+    valorTotal = valorBase + excedente;
+}
     const valorParcela = valorTotal / forma.parcelas;
 
     document.getElementById('resultado').innerHTML = `
