@@ -1,18 +1,16 @@
 {
   "faixas": [
     {
-      "tipo": "residencial",
-      "limite": 400,
-      "formas_pagamento": [
-        { "nome": "À vista", "valor_total": 1800, "parcelas": 1 },
-        { "nome": "3x", "valor_total": 1800, "parcelas": 3 },
-        { "nome": "6x", "valor_total": 1980, "parcelas": 6 },
-        { "nome": "10x", "valor_total": 2200, "parcelas": 10 },
-        { "nome": "12x", "valor_total": 2400, "parcelas": 12 },
-        { "nome": "20x", "valor_total": 2600, "parcelas": 20 },
-        { "nome": "Final", "valor_total": 2400, "parcelas": 1 }
-      ]
-    },
+  "tipo": "residencial",
+  "limite": 400,
+  "formas_pagamento": [
+    { "nome": "À vista", "valor_total": 1800, "parcelas": 1 },
+    { "nome": "3x", "valor_total": 1800, "parcelas": 3 },
+    { "nome": "6x", "valor_total": 1980, "parcelas": 6 },
+    { "nome": "10x", "valor_total": 2200, "parcelas": 10 },
+    { "nome": "Final", "valor_total": 2400, "parcelas": 1 }
+  ]
+},
     {
       "tipo": "residencial_acima",
       "limite": 20000,
