@@ -65,8 +65,20 @@ function calcularValor(dados, tipo, metragem, formaNome) {
         parcelas = forma.parcelas;
     } else if (faixa.tabela_excedente) {
         const base = dados.faixas.find(f => f.tipo === tipoBase);
-        const formaBase = base.formas_pagamento.find(f => f.nome === formaNome);
-        if (!formaBase) return null;
+        let formaBase = base.formas_pagamento.find(f => f.nome === formaNome);
+
+        // Se não encontrou a forma no base, cria um valor fictício com valorBase = 0 e parcelas compatíveis
+        if (!formaBase) {
+            // tenta inferir número de parcelas com base no nome (ex: "12x" => 12)
+            const match = formaNome.match(/^(\d+)x$/i);
+            const parcelasInferidas = match ? parseInt(match[1]) : 1;
+
+            formaBase = {
+                valor_total: 0,
+                parcelas: parcelasInferidas
+            };
+        }
+
         valorBase = formaBase.valor_total;
         parcelas = formaBase.parcelas;
 
@@ -74,6 +86,8 @@ function calcularValor(dados, tipo, metragem, formaNome) {
         if (!faixaExcedente) return null;
 
         const valor_m2 = faixaExcedente.valores[formaNome];
+        if (!valor_m2) return null;
+
         const metrosExcedentes = metragem - 400;
         excedente = metrosExcedentes * valor_m2;
         valorTotal = valorBase + excedente;
