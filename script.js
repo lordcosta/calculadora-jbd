@@ -1,4 +1,4 @@
-// Versão atualizada com IDs padronizados e botão corrigido 
+// Versão atualizada com IDs padronizados, botão corrigido e integração com formulário de adesão
 
 // Função para formatar valor em reais
 function formatarValor(valor) {
@@ -24,14 +24,18 @@ function atualizarFormasPagamento(dados, tipo, metragem) {
 
     if (!metragem || metragem <= 0) return;
 
-    const tipoFaixa = metragem <= 400 ? tipo.toLowerCase() : tipo.toLowerCase() + '_acima';
+    const tipoBase = tipo.toLowerCase();
+    const tipoFaixa = metragem <= 400 ? tipoBase : tipoBase + '_acima';
     const faixa = dados.faixas.find(f => f.tipo === tipoFaixa);
     if (!faixa) return;
 
     let formas = [];
-    if (faixa.formas_pagamento) {
-        formas = faixa.formas_pagamento;
-    } else if (faixa.tabela_excedente) {
+
+    if (metragem <= 400 && faixa.formas_pagamento) {
+        formas = faixa.formas_pagamento.map(f => ({ nome: f.nome }));
+    }
+
+    if (metragem > 400 && faixa.tabela_excedente) {
         formas = Object.keys(faixa.tabela_excedente[0].valores).map(nome => ({ nome }));
     }
 
@@ -127,6 +131,7 @@ const inputMetragem = document.getElementById('metragem');
 const selectForma = document.getElementById('forma_pagamento');
 const btnCalcular = document.getElementById('calcular');
 const btnLimpar = document.getElementById('limpar');
+const btnAdesao = document.getElementById('botaoAdesao');
 
 let dadosAtuais = null;
 
@@ -155,7 +160,10 @@ btnCalcular.addEventListener('click', () => {
     if (!dadosAtuais || !tipo || !metragem || !forma) return;
 
     const resultado = calcularValor(dadosAtuais, tipo, metragem, forma);
-    if (resultado) atualizarResultado(tipo, metragem, forma, resultado);
+    if (resultado) {
+        atualizarResultado(tipo, metragem, forma, resultado);
+        btnAdesao.disabled = false; // Habilita botão após cálculo
+    }
 });
 
 btnLimpar.addEventListener('click', () => {
@@ -165,10 +173,10 @@ btnLimpar.addEventListener('click', () => {
     selectForma.innerHTML = '';
     document.getElementById('resultado').innerHTML = '';
     dadosAtuais = null;
+    btnAdesao.disabled = true; // Desabilita botão após limpar
 });
 
-// NOVO: Botão que gera link para adesão com dados preenchidos
-const btnAdesao = document.getElementById('botaoAdesao');
+// Botão que abre a página de adesão com os dados preenchidos via URL
 if (btnAdesao) {
     btnAdesao.addEventListener('click', () => {
         const tipo = selectTipo.value;
@@ -180,7 +188,6 @@ if (btnAdesao) {
         const resultado = calcularValor(dadosAtuais, tipo, metragem, forma);
         if (!resultado) return;
 
-        // Monta URL com os dados calculados para o formulário de adesão
         const url = new URL('https://adesao-jbd.vercel.app/');
         url.searchParams.set('forma_pagamento', forma);
         url.searchParams.set('qtd_parcelas', resultado.parcelas);
