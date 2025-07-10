@@ -4,6 +4,27 @@
     <meta charset="UTF-8" />
     <title>Calculadora JBD</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Classe reutilizável para botões de destaque */
+        .btn-destaque {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #1e7e34;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-destaque:hover:not(:disabled) {
+            background-color: #218838;
+            transform: scale(1.02);
+        }
+
+        .btn-destaque:disabled {
+            background-color: #ccc;
+            border-color: #999;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -36,6 +57,8 @@
             <div class="buttons">
                 <button id="calcular" class="btn calcular">CALCULAR</button>
                 <button id="limpar" class="btn limpar">LIMPAR</button>
+                <!-- Novo botão para abrir a adesão, inicialmente desabilitado -->
+                <button id="botaoAdesao" class="btn btn-destaque" disabled>QUERO ME CADASTRAR</button>
             </div>
             <section id="resultado"></section>
         </main>
@@ -44,5 +67,29 @@
         </footer>
     </div>
     <script src="script.js"></script>
+    <script>
+        // Desabilita botão "QUERO ME CADASTRAR" até que o cálculo seja feito
+        const btnAdesao = document.getElementById('botaoAdesao');
+        btnAdesao.disabled = true;
+
+        const btnCalcular = document.getElementById('calcular');
+        const btnLimpar = document.getElementById('limpar');
+
+        btnCalcular.addEventListener('click', () => {
+            // Habilita o botão somente após tentativa de cálculo válida
+            const tipo = document.getElementById('tipo').value;
+            const metragem = parseInt(document.getElementById('metragem').value);
+            const forma = document.getElementById('forma_pagamento').value;
+
+            if (tipo && metragem && forma) {
+                btnAdesao.disabled = false;
+            }
+        });
+
+        btnLimpar.addEventListener('click', () => {
+            // Limpar também desativa o botão de adesão
+            btnAdesao.disabled = true;
+        });
+    </script>
 </body>
 </html>
