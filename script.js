@@ -32,7 +32,10 @@ function atualizarFormasPagamento(dados, tipo, metragem) {
     let nomesFormas = [];
 
     if (metragem <= 400 && faixa.formas_pagamento) {
-        nomesFormas = faixa.formas_pagamento.map(f => f.nome);
+        // ✅ Mostra apenas formas que realmente estão disponíveis para metragem <= 400
+        nomesFormas = faixa.formas_pagamento
+            .filter(f => ['À vista', '3x', '6x', '10x', 'Final'].includes(f.nome))
+            .map(f => f.nome);
     } else if (metragem > 400 && faixa.tabela_excedente) {
         nomesFormas = Object.keys(faixa.tabela_excedente[0].valores);
     }
