@@ -208,6 +208,8 @@ if (btnAdesao) {
         url.searchParams.set('qtd_parcelas', resultado.parcelas);
         url.searchParams.set('valor_parcela', resultado.valorParcela.toFixed(2));
         url.searchParams.set('valor_total', resultado.valorTotal.toFixed(2));
+        url.searchParams.set('tipo_imovel', tipo);
+        url.searchParams.set('metragem', metragem);
 
         window.open(url.toString(), '_blank');
     });
