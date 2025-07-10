@@ -32,20 +32,21 @@ function atualizarFormasPagamento(dados, tipo, metragem) {
     let formas = [];
 
     if (metragem <= 400 && faixa.formas_pagamento) {
-        formas = faixa.formas_pagamento.map(f => ({ nome: f.nome }));
+        formas = faixa.formas_pagamento.map(f => f.nome);
     }
 
     if (metragem > 400 && faixa.tabela_excedente) {
-        formas = Object.keys(faixa.tabela_excedente[0].valores).map(nome => ({ nome }));
+        formas = Object.keys(faixa.tabela_excedente[0].valores);
     }
 
-    formas.forEach(forma => {
+    formas.forEach(nome => {
         const option = document.createElement('option');
-        option.value = forma.nome;
-        option.text = forma.nome;
+        option.value = nome;
+        option.textContent = nome;
         selectForma.appendChild(option);
     });
 }
+
 
 // Função para calcular valor
 function calcularValor(dados, tipo, metragem, formaNome) {
